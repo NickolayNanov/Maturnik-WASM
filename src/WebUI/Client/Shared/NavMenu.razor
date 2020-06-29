@@ -1,0 +1,84 @@
+﻿<div class="top-row pl-4 navbar navbar-dark">
+    <a class="navbar-brand ml-2" href=""><img src="/logo.png" style="height: 40px;" /></a>
+    <button class="navbar-toggler" @onclick="ToggleNavMenu">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+</div>
+
+
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+    <ul class="nav flex-column">
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                Начало  
+            </NavLink>
+        </li>
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/Materials" Match="NavLinkMatch.All">
+                Учебни материали
+            </NavLink>
+        </li>
+
+        <AuthorizeView Roles="Admin">
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="Admin">
+                    Админ панел
+                </NavLink>
+            </li>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="User">
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="SolvedExams">
+                        Решавани изпити
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="AllExams">
+                        Всички изпити
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView>
+            <Authorized>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="AllExams">
+                        Всички изпити
+                    </NavLink>
+                </li>
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="SolvedExams">
+                        Решавани изпити
+                    </NavLink>
+                </li>
+            </Authorized>
+        </AuthorizeView>
+
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="SchoolSubjects">
+                Учебни предмети
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="Contacts">
+                Контакти
+            </NavLink>
+        </li>
+    </ul>
+</div>
+
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

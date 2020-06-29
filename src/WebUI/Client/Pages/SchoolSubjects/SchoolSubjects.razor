@@ -1,0 +1,50 @@
+﻿@page "/SchoolSubjects"
+
+@using Maturnik.Application.SchoolSubjects.Queries.All
+@using Maturnik.WebUI.Shared.Models
+
+@inject IHttpClientFactory HttpClientFactory
+
+<h1>Учебни предмети</h1>
+
+<p>Това са най-често търсените предмети.</p>
+
+@if (Data != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Име</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var subject in Data.Subjects)
+            {
+                <tr>
+                    <td>@(index++)</td>
+                    <td>@subject.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <h3>Loading...</h3>
+}
+@code {
+    private ApiResponse<AllSchoolSubjectsViewModel> response;
+    private AllSchoolSubjectsViewModel Data;
+    private int index = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var Http = HttpClientFactory.CreateClient("WebUI.ServerAPI");
+        response = await Http.GetFromJsonAsync<ApiResponse<AllSchoolSubjectsViewModel>>("unauthorizedApi/SchoolSubjects/List");
+        if (response.Succeeded)
+        {
+            Data = response.Data;
+        }
+    }
+}

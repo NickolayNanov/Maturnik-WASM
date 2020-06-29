@@ -1,0 +1,10 @@
+﻿<a 
+   class="btn container col-md-5 mr-1 mb-2 card-button" href="AllExams/@ExamTypeUrl" style="color: white;">
+    @ExamType
+</a>
+
+@code {
+    [Parameter] public string ExamTypeUrl { get; set; }
+
+    [Parameter] public string ExamType { get; set; }
+}

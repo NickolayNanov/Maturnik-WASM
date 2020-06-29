@@ -1,0 +1,53 @@
+﻿@page "/AllExams"
+@using Application.Exams.Queries.ExamsAll
+@using Maturnik.WebUI.Client.Components.Exams
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Application.Common 
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize]
+@inject IHttpClientFactory HttpClientFactory
+
+
+<h1 class="text-center mb-5">Всички изпити</h1>
+
+@if (Data != null)
+{
+    <div class="container mt-5">
+        <div class="row">
+            @foreach (var examType in Data.Exams)
+            {
+                <ExamButton ExamType="@examType.ExamType" ExamTypeUrl="@examType.ExamTypeUrl"/>
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h3>Loading...</h3>
+}
+@code {
+    ExamsAllViewModel Data;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var Http = HttpClientFactory.CreateClient("WebUI.ServerAPI");
+            ApiResponse<ExamsAllViewModel> response = await Http.GetFromJsonAsync<ApiResponse<ExamsAllViewModel>>("api/Exams/All");
+            if (response.Succeeded)
+            {
+                Console.WriteLine(response.Succeeded);
+                Data = response.Data;
+                Console.WriteLine(Data.Exams.First().ExamId);
+            }
+        }
+        catch (AccessTokenNotAvailableException exception)
+        {
+            exception.Redirect();
+        }
+
+
+        await base.OnInitializedAsync();
+    }
+}

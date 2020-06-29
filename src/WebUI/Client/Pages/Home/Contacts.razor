@@ -1,0 +1,121 @@
+﻿@page "/Contacts"
+
+@*@using OnlineExamer.Infrastructure.SendGrid
+@using OnlineExamer.Models.Dtos.SendGrid*@
+
+@*@inject SendGrid emailSender*@
+@inject NavigationManager navigation
+<section class="mb-4 text-center">
+
+    <!--Section heading-->
+    <h2 class="h1-responsive font-weight-bold text-center my-4">Контакти</h2>
+    <!--Section description-->
+    <p class="text-center w-responsive mx-auto mb-5">
+        Имате въпрос? Моля не се колебайте и се свържете с нас и ще получите отговор по възможно най-бързия начин!
+    </p>
+    <div class="text-center">
+        <p class="text-danger">@ErrorMsg</p>
+        <p class="text-success">@SuccessMsg</p>
+    </div>
+    <div class="row text-center">
+
+        <!--Grid column-->
+        <div class="col-md-9 mb-md-0 mb-5">
+            <div>
+
+                <!--Grid row-->
+                <div class="row mb-3">
+
+                    <div class="col-md-6">
+                        <div class="md-form mb-3">
+                            <input @bind="Name" type="text" id="name" name="name" class="form-control contacts-placeholder" placeholder="Вашето име..." />
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="md-form mb-0">
+                            <input @bind="Email" type="text" id="email" name="email" class="form-control contacts-placeholder" placeholder="Е-Поща..." />
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-12">
+                        <div class="md-form mb-0">
+                            <input @bind="Subject" type="text" id="subject" name="subject" class="form-control contacts-placeholder" placeholder="Тема..." />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-md-12">
+
+                        <div class="md-form">
+                            <textarea @bind="Message" type="text" id="message" name="message" rows="2" class="form-control md-textarea contacts-placeholder" placeholder="Съобщение..."></textarea>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center text-md-left">
+                <button class="btn btn-primary" @*@onclick="SendAsync"*@ style="color: white">Изпрати</button>
+            </div>
+
+            <div class="status"></div>
+        </div>
+    </div>
+
+</section>
+
+@code{
+    [Parameter] public string Name { get; set; }
+    [Parameter] public string Email { get; set; }
+    [Parameter] public string Message { get; set; }
+    [Parameter] public string Subject { get; set; }
+
+    string ErrorMsg = "";
+    string SuccessMsg = "";
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
+    }
+
+    //private async Task SendAsync()
+    //{
+    //    if (string.IsNullOrEmpty(Name) ||
+    //       string.IsNullOrEmpty(Email) ||
+    //       string.IsNullOrEmpty(Message) ||
+    //       string.IsNullOrEmpty(Subject))
+    //    {
+    //        this.SuccessMsg = "";
+    //        this.ErrorMsg = "Попълнете всички полета преди да изпратите имейл!";
+    //        return;
+    //    }
+    //    else
+    //    {
+    //        //EmailModel model = new EmailModel(Email, Name, Subject, Message);
+    //        //var response = await emailSender.SendEmailAsync(model);
+
+    //        //if (response.StatusCode == System.Net.HttpStatusCode.Accepted)
+    //        //{
+    //        //    this.SuccessMsg = "Вашето съобщение беше изпратено успешно";
+    //        //    this.ErrorMsg = "";
+    //        //}
+
+    //        Clear();
+    //    }
+    //}
+
+    private void Clear()
+    {
+        this.Name = string.Empty; ;
+        this.Email = string.Empty; ;
+        this.Message = string.Empty;
+        this.Subject = string.Empty;
+    }
+}

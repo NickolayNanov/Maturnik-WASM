@@ -1,0 +1,51 @@
+﻿@page "/AllExams/{ExamTypeUrl}"
+@using Application.Common
+@using Maturnik.Application.Exams.Queries.ExamsAll
+@using Microsoft.AspNetCore.WebUtilities
+@using Maturnik.Application.Exams.Queries.ExamsAllBySubject
+@attribute [Authorize]
+
+@inject NavigationManager navManager
+@inject IHttpClientFactory ClientFactory
+
+<h1 class="text-center mb-5">Всички изпити по @ExamType</h1>
+
+@if (Exams != null)
+{
+    <div class="container mt-5">
+        <div class="row">
+            @foreach (var examType in Exams)
+            {
+                <ExamTypeYear ExamType="@examType" />
+            }
+        </div>
+    </div>
+}
+else
+{
+    <h3>Loading...</h3>
+}
+
+@code {
+    [Parameter]
+    public string ExamType { get { return ExamTypeUrl.ParseStr(); } set { this.ExamType = value; } }
+
+    [Parameter]
+    public string ExamTypeUrl { get; set; }
+
+    private IEnumerable<ExamViewModel> Exams;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        HttpClient Http = ClientFactory.CreateClient("WebUI.ServerAPI");
+        ApiResponse<ExamsAllBySubjectListViewModel> response = await Http.GetFromJsonAsync<ApiResponse<ExamsAllBySubjectListViewModel>>($"api/Exams/AllBySubject?subject={ExamTypeUrl}");
+
+        if (response.Succeeded)
+        {
+            Exams = response.Data.Exams;
+        }
+
+        await base.OnInitializedAsync();
+    }
+}
