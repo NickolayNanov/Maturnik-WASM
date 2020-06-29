@@ -1,0 +1,78 @@
+﻿@page "/AllExams/{Subject}/{Year:int}"
+
+@inject IHttpClientFactory ClientFactory
+
+@using Maturnik.WebUI.Shared.Dtos.Exam
+
+@if (exam != null)
+{
+    <h3 class="text-center">Изпит по (@Subject) - @Year</h3>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                @for (int i = 0; i < exam.Questions.Count; i++)
+                {
+                    <span>@(exam.Questions[i].Title)</span>
+
+                    if (!exam.Questions[i].IsOpenAnswer)
+                    {
+                        <ul class="list-group" id="question_@(i - 1)">
+                            @for (int j = 0; j < exam.Questions[i].Answers.Count; j++)
+                            {
+                                @if (exam.Questions[i].IsSingleAnswer)
+                                {
+                                    <li style="background: @exam.Questions[i].Answers[j].BackgroundColor">
+                                        <button @onclick="() => GiveAnswer(i - 1, j)"
+                                                class="list-group-item mb-3 marked-answer"
+                                                id="question_@(i - 1)_answer_@j">
+                                            <input @bind="@exam.Questions[i].Answers[j].IsSelected"
+                                                   type="checkbox"
+                                                   id="input_@(i - 1)_question_@j"
+                                                   class="check"
+                                                   style="display:none" />
+                                            <label>@exam.Questions[i].Answers[j].Content</label>
+                                        </button>
+                                    </li>
+                                }
+                            }
+                            @if (!string.IsNullOrEmpty(exam.Questions[i].ImgUrl))
+                            {
+                                <img src="@exam.Questions[i].ImgUrl" width="300" height="300" />
+                            }
+                            <br />
+                        </ul>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h3>Loading...</h3>
+}
+
+@code {
+    [Parameter] public string Subject { get; set; }
+    [Parameter] public int Year { get; set; }
+
+    ExamDto exam = new ExamDto();
+
+    protected override Task OnInitializedAsync()
+    {
+        var Http = ClientFactory.CreateClient("WebUI.ServerAPI");
+
+        return base.OnInitializedAsync();
+    }
+
+    private void GiveAnswer(int question, int answer)
+    {
+        exam.Questions[question].Answers.ToList().ForEach(x => x.BackgroundColor = "white");
+        exam.Questions[question].Answers[answer].BackgroundColor = "lightyellow";
+
+        exam.Questions[question].Answers.ToList().ForEach(x => x.IsSelected = false);
+        exam.Questions[question].Answers[answer].IsSelected = true;
+    }
+
+}

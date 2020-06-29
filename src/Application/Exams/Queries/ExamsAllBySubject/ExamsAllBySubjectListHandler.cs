@@ -29,6 +29,7 @@ namespace Maturnik.Application.Exams.Queries.ExamsAllBySubject
 
             IEnumerable<ExamViewModel> exams = await dbContext.Exams.AsNoTracking()
                                              .Where(x => x.ExamType == examType)
+                                             .OrderBy(e => e.YearOfCreation)
                                              .Select(x => new ExamViewModel(x.Id, 
                                                                             x.ExamType.ToString(), 
                                                                             ExamTypeExtensions.Parse(x), 
